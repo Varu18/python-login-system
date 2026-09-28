@@ -15,13 +15,16 @@ def create_user(username, password):
     connection = sqlite3.connect("users.db")
     cursor = connection.cursor()
 
-    cursor.execute(
-        "INSERT INTO users (username, password) VALUES (?, ?)",
-        (username, password)
-    )
+    try:
+        cursor.execute(
+            "INSERT INTO users (username, password) VALUES (?, ?)",
+            (username, password)
+        )
+        connection.commit()
+        return True
 
-    connection.commit()
-    connection.close()
+    except sqlite3.IntegrityError:
+        return False
 
-connection.commit()
-connection.close()
+    finally:
+        connection.close()

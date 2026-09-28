@@ -5,7 +5,10 @@ def signup():
     username = input("Username: ")
     password = input("Password: ")
 
-    print(f"Account created for {username}")
+    if create_user(username, password):
+        print("Account created!")
+    else:
+        print("Username already exists!")
 
 
 def login():
