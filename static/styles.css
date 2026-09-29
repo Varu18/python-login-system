@@ -13,6 +13,8 @@ body {
     width: 350px;
     padding:40px;
     background-color: #e5eaf5;
+    filter: drop-shadow(#301934 15px 15px 5px);
+
     border-radius: 12px;
 }
 
@@ -34,4 +36,9 @@ body {
 
 .login-container button {
     cursor: pointer;
+    box-shadow: 0 4px 10px rgb(0, 0, 0, 0.2);
+}
+
+.login-container button:hover {
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
 }
