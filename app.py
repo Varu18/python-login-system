@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, flash, session
+from flask import Flask, render_template, request, flash, session, redirect
 from dotenv import load_dotenv
 import os
 from database import init_db, create_user, check_user
@@ -11,6 +11,7 @@ app.secret_key = "SECRET_KEY"
 
 init_db()
 
+
 @app.route("/", methods=["GET", "POST"])
 def home():
     if request.method == "POST":
@@ -19,11 +20,28 @@ def home():
 
         if check_user(username, password):
             session["username"] = username
-            return "Logged in!"
+            return redirect("/dashboard")
 
         flash("Invalid username or password.")
-        
+
     return render_template("login.html")
+
+
+@app.route("/dashboard")
+def dashboard():
+    if "username" not in session:
+        return "You must be logged in."
+
+    return render_template(
+        "dashboard.html",
+        username=session["username"]
+    )
+
+
+@app.route("/logout")
+def logout():
+    session.pop("username", None)
+    return redirect("/")
 
 
 @app.route("/signup", methods=["GET", "POST"])
