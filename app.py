@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, flash
 from dotenv import load_dotenv
 import os
+from database import create_user
 
 load_dotenv()
 
@@ -20,10 +21,23 @@ def signup():
         username = request.form["username"]
         password = request.form["password"]
 
-        print(username)
-        print(password)
+        if len(password) < 8:
+            flash("Password must contain at least 8 characters.")
+            return render_template("signup.html")
 
-        flash("Account created succesfully!")
+        if not any(char.isalpha() for char in password):
+            flash("Password must contain at least one letter.")
+            return render_template("signup.html")
+
+        if not any(char.isdigit() for char in password):
+            flash("Password must contain at least one number.")
+            return render_template("signup.html")
+
+        if create_user(username, password):
+            flash("Account created successfully!")
+        else:
+            flash("Username already exists.")
+
     return render_template("signup.html")
 
 

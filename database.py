@@ -1,4 +1,5 @@
 import sqlite3
+from werkzeug.security import generate_password_hash
 
 connection = sqlite3.connect("users.db")
 cursor = connection.cursor()
@@ -16,15 +17,18 @@ def create_user(username, password):
     cursor = connection.cursor()
 
     try:
+        password_hash = generate_password_hash(password)
+
         cursor.execute(
             "INSERT INTO users (username, password) VALUES (?, ?)",
-            (username, password)
+            (username, password_hash)
         )
+
         connection.commit()
         return True
 
     except sqlite3.IntegrityError:
         return False
-
+    
     finally:
         connection.close()
