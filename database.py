@@ -1,8 +1,12 @@
 import sqlite3
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 
 connection = sqlite3.connect("users.db")
 cursor = connection.cursor()
+
+def init_db():
+    connection = sqlite3.connect("users.db")
+    cursor = connection.cursor()
 
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS users (
@@ -32,3 +36,21 @@ def create_user(username, password):
     
     finally:
         connection.close()
+
+def check_user(username, password):
+    connection = sqlite3.connect("users.db")
+    cursor = connection.cursor()
+
+    cursor.execute(
+        "SELECT password FROM users WHERE username = ?",
+        (username,)
+    )
+
+    user = cursor.fetchone()
+
+    connection.close()
+
+    if user and check_password_hash(user[0], password):
+        return True
+
+    return False
